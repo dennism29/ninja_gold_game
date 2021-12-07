@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja Money</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="container">
+        <h4>Your Gold: <span>{{request.session.money}} Golds</span></h4>
+        <h4>Moves Left: {{request.session.limit}}</h4>
+        <h4>Gold Needed: {{request.session.target}}</h4>
+        <form action="/process_money/" method="POST">
+            {% csrf_token %}
+            <div class="box">
+                <h1>Farm</h1>
+                <p>(earns 10-20 golds)</p>
+                <button type="submit" name="location" value="farm">Find Gold!</button>
+            </div>
+            <div class="box">
+                <h1>Cave</h1>
+                <p>(earns 5-10 golds)</p>
+                <button type="submit" name="location" value="cave">Find Gold!</button>
+            </div>
+            <div class="box">
+                <h1>House</h1>
+                <p>(earns 2-5 golds)</p>
+                <button type="submit" name="location" value="house">Find Gold!</button>
+            </div>
+            <div class="box">
+                <h1>Casino</h1>
+                <p>(earns/takes 0-50 golds)</p>
+                <button type="submit" name="location" value="casino">Find Gold!</button>
+            </div>
+        </form>
+        <h4>Activities:</h4>
+        <div id="activities">
+            <div>
+                {% for messages in request.session.message %}
+                    {% if 'lost' in messages or 'LOSE!' in messages %}
+                        <div class="red">{{messages}}</div>
+                    {% else %}
+                        <div class="green">{{messages}}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% if request.session.target == 0 or request.session.limit == 0 %}
+            <form action="/reset/">
+                <button>Start Again?</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
